@@ -91,8 +91,13 @@ def change_dir(now_dir):
 
 
 # pre_loc = Cars[].loc + dir_vec[Cars[].dir]
-def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P):
-  pre_P2 = -130
+def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P,time):
+    
+    
+  k = 0
+  kk = 0
+    
+    
   P_big = -130
   big   = 0
   P     = [-130,-130,-130,-130]
@@ -100,26 +105,19 @@ def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P):
   for j in range(4):
     #print("j = ",j,"Base_loc ",Bases_loc[j])
     P[j] = calculate_power(pre_loc_x,pre_loc_y,Bases_loc[j][0],Bases_loc[j][1])
-    # for principle3
-    if j == now_B[2]:
-        pre_P2 = P[j]
 
     if P[j] > P_big:
       #print("P[j] = ",P[j],"P_b = ",P_big)
       big = j
       P_big = P[j] 
-  '''
-  if P_big > (pre_P2):
-      #print("P_big = ",P_big,"now_P[2]",now_P[2])
-      print(P_big-pre_P2)
-      print("big = ",big,"now_B[2]",now_B[2])
-      '''
+      
 
   # change
   # principle_1 ## Pnew > Pold
   if big != now_B[0]: # P[big] > now_B[0]
       now_B[0] = big
       hoff[0] += 1
+      k = 1
     #print(hoff)
     
     # principle_2 ## Pnew > Pold & Pold < T
@@ -129,9 +127,11 @@ def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P):
       hoff[1] += 1
     
     # principle_3 ## Pnew > Pold + E    "
-  if P_big > (pre_P2+5) and big != now_B[2]: # E = 5      
+  if P_big > (now_P[2]+5) and big != now_B[2]: # E = 5      
+# if P_big > (pre_P2+5) and big != now_B[2]: # E = 5      
       now_B[2] = big
       hoff[2] += 1
+      kk = 1
     
     # principle_4
   d_old = (pre_loc_x - Bases_loc[now_B[3]][0])**2 + (pre_loc_y - Bases_loc[now_B[3]][1])**2
@@ -139,7 +139,20 @@ def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P):
   if big != now_B[3] and d_new < d_old: # P[big] > now_B[3]:
       now_B[3] = big
       hoff[3] += 1
-      
+ 
+
+  if kk != k and hoff[0] < 100:
+      print("-----------------",time)
+      print(k,kk,"now_P[2] = ",now_P[2],"now_P[0] = ",now_P[0])
+      print("now_B[2] = ",now_B[2],"now_B[0] = ",now_B[0])
+      print("hoff[2] = ",hoff[2],"hoff[0] = ",hoff[0])
+
+
+
+
+
+
+     
 
   return now_B
 
@@ -155,6 +168,9 @@ def remove(Cars,time_record,x,y,i):
 
 # main
 for time in range(total):
+  #j = 0
+  #for j in range(11): 
+    #access = j
   if random.randint(1,31) == 1:
     n += 1
     access = random.randint(0,11)   # choose entry
@@ -179,11 +195,45 @@ for time in range(total):
       # avg_power
       avg_power[j] += Cars[i].now_P[j]
 
+  
+    k = i  
+    x = Cars[k].loc[0]
+    y = Cars[k].loc[1]
+    
+          
+    Cars[k].now_B = change_Base_hoff(Cars[i].loc[0],Cars[i].loc[1],Base,hoff,Cars[k].now_B,Cars[k].now_P,time)
+    
+    
+    
+    
     if remove(Cars,time_record,Cars[i].loc[0],Cars[i].loc[1],i):
       i += 1
     i+= 1
 
+
+  # each % 75 == 0 sec, judge direction
+  i = 0
+  f = [i for i,v in enumerate(time_record) if v==(time)]
+  for i in range(len(f)):
+  #if (time) in time_record:
+    k = f[i] # get index k
+    # change_dir
+    Cars[k].dir = change_dir(Cars[k].dir)
+    time_record[k] += 75
+
+
+
+
+
+
+
+
+
+
+
+
   # each % 75 == 0 sec
+  '''
   i = 0
   f = [i for i,v in enumerate(time_record) if v==(time)]
   for i in range(len(f)):
@@ -200,17 +250,19 @@ for time in range(total):
         
     # add 75 sec 
     time_record[k] += 75
-  
+  '''
+    
   handoff_0[time] = hoff[0]
   handoff_1[time] = hoff[1]
   handoff_2[time] = hoff[2]
   handoff_3[time] = hoff[3]
 
-
+plt.figure()
 plt.plot(times,handoff_0,label="$Best$",color="red")
 plt.plot(times,handoff_1,label="$Threshold$",color="yellow")
 plt.plot(times,handoff_2,label="$E..$",color="green")
 plt.plot(times,handoff_3,label="$Mine$",color="blue")
+plt.show()
 
 #print(handoff_3)
 
