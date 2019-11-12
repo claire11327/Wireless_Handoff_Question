@@ -206,6 +206,26 @@ for time in range(total):
     k = f[i] # get index k
     # change_dir
     Cars[k].dir = change_dir(Cars[k].dir)
+    if (x == 0 and y == 0):
+        if Cars[k].dir == 2:
+             Cars[k].dir = 3
+        else: 
+             Cars[k].dir = 2
+    if (x == 3000 and y == 0):
+        if Cars[k].dir == 0:
+             Cars[k].dir = 3
+        else: 
+             Cars[k].dir = 0
+    if (x == 0 and y == 3000):
+        if Cars[k].dir == 0:
+             Cars[k].dir = 1
+        else: 
+             Cars[k].dir = 0
+    if (x == 3000 and y == 3000):
+        if Cars[k].dir == 1:
+             Cars[k].dir = 2
+        else: 
+             Cars[k].dir = 1
     time_record[k] += 75
 
 
