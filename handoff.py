@@ -91,44 +91,40 @@ def change_dir(now_dir):
 
 
 # pre_loc = Cars[].loc + dir_vec[Cars[].dir]
-def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P,time):
-    
-    
-  k = 0
+def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P,cari):
   kk = 0
-    
-    
+        
   P_big = -130
   big   = 0
   P     = [-130,-130,-130,-130]
   #print("now_B = ",now_B[0])
   for j in range(4):
-    #print("j = ",j,"Base_loc ",Bases_loc[j])
     P[j] = calculate_power(pre_loc_x,pre_loc_y,Bases_loc[j][0],Bases_loc[j][1])
 
     if P[j] > P_big:
-      #print("P[j] = ",P[j],"P_b = ",P_big)
       big = j
       P_big = P[j] 
       
+  #if cari == 0 and P_big != P[now_B[2]]:
+     # print("P_big = ",P_big,"P[] = ",P[now_B[2]])
+     # print("big = ",big,"now_B[2] = ",now_B[2])
+
+
+
 
   # change
   # principle_1 ## Pnew > Pold
   if big != now_B[0]: # P[big] > now_B[0]
       now_B[0] = big
       hoff[0] += 1
-      k = 1
-    #print(hoff)
     
     # principle_2 ## Pnew > Pold & Pold < T
   if now_P[1] < -110 and big != now_B[1]: # T = -110
-      #print("now_P[1] = ",now_P[1]," P_big = %d",P_big)
       now_B[1] = big
       hoff[1] += 1
     
     # principle_3 ## Pnew > Pold + E    "
-  if P_big > (now_P[2]+5) and big != now_B[2]: # E = 5      
-# if P_big > (pre_P2+5) and big != now_B[2]: # E = 5      
+  if P_big > (P[now_B[2]]+5) and big != now_B[2]: # E = 5      
       now_B[2] = big
       hoff[2] += 1
       kk = 1
@@ -141,18 +137,9 @@ def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P,time):
       hoff[3] += 1
  
 
-  if kk != k and hoff[0] < 100:
-      print("-----------------",time)
-      print(k,kk,"now_P[2] = ",now_P[2],"now_P[0] = ",now_P[0])
-      print("now_B[2] = ",now_B[2],"now_B[0] = ",now_B[0])
-      print("hoff[2] = ",hoff[2],"hoff[0] = ",hoff[0])
+  #if kk != 0 and cari == 0:
+      #print("-----------------")
 
-
-
-
-
-
-     
 
   return now_B
 
@@ -177,7 +164,7 @@ for time in range(total):
     # new / init car
     car = Car_struct()
     car.loc = Entry[access]
-    car.dir = math.floor(access/3)
+    car.dir = change_dir(math.floor(access/3))
     car.init_t = time # time start at t = 0
     car.now_B = init_now_B(access)
     Cars.append(car)
@@ -201,7 +188,7 @@ for time in range(total):
     y = Cars[k].loc[1]
     
           
-    Cars[k].now_B = change_Base_hoff(Cars[i].loc[0],Cars[i].loc[1],Base,hoff,Cars[k].now_B,Cars[k].now_P,time)
+    Cars[k].now_B = change_Base_hoff(Cars[i].loc[0],Cars[i].loc[1],Base,hoff,Cars[k].now_B,Cars[k].now_P,i)
     
     
     
