@@ -91,14 +91,14 @@ def change_dir(now_dir):
 
 
 # pre_loc = Cars[].loc + dir_vec[Cars[].dir]
-def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P,cari):
+def change_Base_hoff(loc_x,loc_y,Bases_loc,hoff,now_B,now_P,cari):
         
   P_big = -130
   big   = 0
   P     = [-130,-130,-130,-130]
   
   for j in range(4):
-    P[j] = calculate_power(pre_loc_x,pre_loc_y,Bases_loc[j][0],Bases_loc[j][1])
+    P[j] = calculate_power(loc_x,loc_y,Bases_loc[j][0],Bases_loc[j][1])
 
     if P[j] > P_big:
       big = j
@@ -109,25 +109,28 @@ def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P,cari):
   # change
   # principle_1 ## Pnew > Pold
   if P_big > P[now_B[0]]: # P[big] > now_B[0]
+      now_P[0] = P_big
       now_B[0] = big
       hoff[0] += 1
     
     # principle_2 ## Pnew > Pold & Pold < T
   if now_P[1] < -110 and P_big > P[now_B[1]]: # T = -110
+      now_P[1] = P_big
       now_B[1] = big
       hoff[1] += 1
     
     # principle_3 ## Pnew > Pold + E    "
   if P_big > (P[now_B[2]]+5):  # E = 5      
+      now_P[2] = P_big
       now_B[2] = big
       hoff[2] += 1
     
     # principle_4 ## Pold < -120
   if now_P[3] < -120 and P_big > P[now_B[3]]:
+      now_P[3] = P_big
       now_B[3] = big
       hoff[3] += 1
  
-
   return now_B
 
 
@@ -161,21 +164,19 @@ for time in range(total):
   i = 0
   while i < len(Cars):
     turn += 1
-    Cars[i].loc = list_add(Cars[i].loc,dir_vec[Cars[i].dir])
+    Cars[i].loc = list_add(Cars[i].loc,dir_vec[Cars[i].dir])    
+    Cars[i].now_B = change_Base_hoff(Cars[i].loc[0],Cars[i].loc[1],Base,hoff,Cars[i].now_B,Cars[i].now_P,i)
+    
     
     for j in range(4):
       Base_index = Cars[i].now_B[j]
       Cars[i].now_P[j] = calculate_power(Cars[i].loc[0],Cars[i].loc[1],Base[Base_index][0], Base[Base_index][1])
       # avg_power
       avg_power[j] += Cars[i].now_P[j]
-
+      
   
-    k = i  
-    x = Cars[k].loc[0]
-    y = Cars[k].loc[1]
     
           
-    Cars[k].now_B = change_Base_hoff(Cars[i].loc[0],Cars[i].loc[1],Base,hoff,Cars[k].now_B,Cars[k].now_P,i)
     
     
     
@@ -193,6 +194,8 @@ for time in range(total):
     k = f[i] # get index k
     # change_dir
     Cars[k].dir = change_dir(Cars[k].dir)
+    x = Cars[k].loc[0]
+    y = Cars[k].loc[1]
     
     # if car is at the corner
     if (x == 0 and y == 0):
