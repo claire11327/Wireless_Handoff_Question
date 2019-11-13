@@ -118,11 +118,11 @@ def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P,cari):
       hoff[1] += 1
     
     # principle_3 ## Pnew > Pold + E    "
-  if P_big > (now_P[2]+5) and P_big > P[now_B[2]]: # E = 5      
+  if P_big > (P[now_B[2]]+5):  # E = 5      
       now_B[2] = big
       hoff[2] += 1
     
-    # principle_4
+    # principle_4 ## Pold < -120
   if now_P[3] < -120 and P_big > P[now_B[3]]:
       now_B[3] = big
       hoff[3] += 1
