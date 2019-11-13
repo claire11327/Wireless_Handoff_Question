@@ -92,12 +92,11 @@ def change_dir(now_dir):
 
 # pre_loc = Cars[].loc + dir_vec[Cars[].dir]
 def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P,cari):
-  kk = 0
         
   P_big = -130
   big   = 0
   P     = [-130,-130,-130,-130]
-  #print("now_B = ",now_B[0])
+  
   for j in range(4):
     P[j] = calculate_power(pre_loc_x,pre_loc_y,Bases_loc[j][0],Bases_loc[j][1])
 
@@ -105,41 +104,29 @@ def change_Base_hoff(pre_loc_x,pre_loc_y,Bases_loc,hoff,now_B,now_P,cari):
       big = j
       P_big = P[j] 
       
-  #if cari == 0 and P_big != P[now_B[2]]:
-     # print("P_big = ",P_big,"P[] = ",P[now_B[2]])
-     # print("big = ",big,"now_B[2] = ",now_B[2])
-
-
-
+      
 
   # change
   # principle_1 ## Pnew > Pold
-  if big != now_B[0]: # P[big] > now_B[0]
+  if P_big > P[now_B[0]]: # P[big] > now_B[0]
       now_B[0] = big
       hoff[0] += 1
     
     # principle_2 ## Pnew > Pold & Pold < T
-  if now_P[1] < -110 and big != now_B[1]: # T = -110
+  if now_P[1] < -110 and P_big > P[now_B[1]]: # T = -110
       now_B[1] = big
       hoff[1] += 1
     
     # principle_3 ## Pnew > Pold + E    "
-  if P_big > (P[now_B[2]]+5) and big != now_B[2]: # E = 5      
+  if P_big > (now_P[2]+5) and P_big > P[now_B[2]]: # E = 5      
       now_B[2] = big
       hoff[2] += 1
-      kk = 1
     
     # principle_4
-  d_old = (pre_loc_x - Bases_loc[now_B[3]][0])**2 + (pre_loc_y - Bases_loc[now_B[3]][1])**2
-  d_new = (pre_loc_x - Bases_loc[big][0])**2 + (pre_loc_y - Bases_loc[big][1])**2
-  if big != now_B[3] and d_new < d_old: # P[big] > now_B[3]:
+  if now_P[3] < -120 and P_big > P[now_B[3]]:
       now_B[3] = big
       hoff[3] += 1
  
-
-  #if kk != 0 and cari == 0:
-      #print("-----------------")
-
 
   return now_B
 
@@ -206,6 +193,8 @@ for time in range(total):
     k = f[i] # get index k
     # change_dir
     Cars[k].dir = change_dir(Cars[k].dir)
+    
+    # if car is at the corner
     if (x == 0 and y == 0):
         if Cars[k].dir == 2:
              Cars[k].dir = 3
@@ -231,34 +220,6 @@ for time in range(total):
 
 
 
-
-
-
-
-
-
-
-
-  # each % 75 == 0 sec
-  '''
-  i = 0
-  f = [i for i,v in enumerate(time_record) if v==(time)]
-  for i in range(len(f)):
-  #if (time) in time_record:
-    k = f[i] # get index k
-    # change_dir
-    Cars[k].dir = change_dir(Cars[k].dir)
-    # change_Base_hoff
-    pre_loc = [0,0]
-    x = Cars[k].loc[0] + dir_vec[Cars[k].dir][0]
-    y = Cars[k].loc[1] + dir_vec[Cars[k].dir][1]
-      
-    Cars[k].now_B = change_Base_hoff(x,y,Base,hoff,Cars[k].now_B,Cars[k].now_P)
-        
-    # add 75 sec 
-    time_record[k] += 75
-  '''
-    
   handoff_0[time] = hoff[0]
   handoff_1[time] = hoff[1]
   handoff_2[time] = hoff[2]
