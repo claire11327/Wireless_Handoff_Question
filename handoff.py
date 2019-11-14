@@ -23,9 +23,6 @@ Base = [[ 750, 750],[2250, 750],[2250,2250],[ 750,2250]]
 
 time = 0 # for loop 86400
 times = [i for i in range(total)]  # for plot_x
-# record init_time + 75*t 
-  ## [t:# of times at intersection]
-time_record = [] 
 
 avg_power = [0,0,0,0]
 
@@ -123,7 +120,7 @@ def change_Base_hoff(loc,Bases_loc,hoff,now_B,cari):
       hoff[2] += 1
     
     # principle_4 ## Pold < -120
-  if P[now_B[3]] < -120 and P_big > P[now_B[3]]:
+  if P[now_B[3]] < -125 and P_big > P[now_B[3]]:
       now_B[3] = big
       hoff[3] += 1
  
@@ -133,21 +130,15 @@ def change_Base_hoff(loc,Bases_loc,hoff,now_B,cari):
   avg_power[3] += P[now_B[3]] 
 
 
-  if cari == 0:
-      print("P = ",P)
      
   return now_B
 
 
 
 
-def remove(Cars,time_record,x,y,i):
-  #if i == 0:
-      #print(" remove x = ",x,"  y = ", y)
+def remove(Cars,x,y):
   if x > 3000 or x < 0 or y > 3000 or y < 0:
-    print("in remove x = ",x,"  y = ", y)
     del Cars[i]
-    del time_record[i]
     return True
 
 
@@ -165,42 +156,21 @@ for time in range(total):
       car.init_t = time # time start at t = 0
       car.now_B = init_now_B(access)
       Cars.append(car)
-      time_record.append((time)+75) # time = car.init_t
 
 
 
-
-  # each % 75 == 0 sec, judge direction
-  i = 0
-  #f = [i for i,v in enumerate(time_record) if v==(time)]
-  #for i in range(len(f)):
-  '''
-  for index, t in enumerate(time_record):
-    if t == time:
-        k = index
-        #if (time) in time_record:
-        #k = f[i] # get index k
-        # change_dir
-        Cars[k].dir = change_dir(Cars[k].dir)
-        '''
 
   # for each sec
   i = 0
   while i < len(Cars):
-    if i == 0:
-        print(time, "dir ",dir_vec[Cars[0].dir],"loc ", Cars[0].loc,"B ",Cars[0].now_B)
-    #print(dir_vec[Cars[0].dir])
-    #print(Cars[0].loc)
-    #print(Cars[0].now_B)
-    #print("-----")
     
     if (Cars[i].loc[0] % 750 == 0 and Cars[i].loc[1] % 750 == 0 ):
       Cars[i].dir = change_dir(Cars[i].dir)
       
+      
+      
       x = Cars[i].loc[0]
       y = Cars[i].loc[1]
-      if i == 0:
-          print("x = ",x," y = ",y)
     # if car is at the corner
       if (x == 0 and y == 0):
           if Cars[i].dir == 2:
@@ -218,18 +188,16 @@ for time in range(total):
           else: 
               Cars[i].dir = 2
       if (x == 3000 and y == 3000):
-          print("turn r/l:x = ",x," y = ",y)
           if Cars[i].dir == 3:
               Cars[i].dir = 2
           else: 
               Cars[i].dir = 1
-      time_record[i] += 75
         
-    
+      
     
     turn += 1
     Cars[i].loc = list_add(Cars[i].loc,dir_vec[Cars[i].dir],i)        
-    if remove(Cars,time_record,Cars[i].loc[0],Cars[i].loc[1],i):
+    if remove(Cars,Cars[i].loc[0],Cars[i].loc[1]):
       i += 1
     if(i < len(Cars)):
       Cars[i].now_B = change_Base_hoff(Cars[i].loc,Base,hoff,Cars[i].now_B,i)
@@ -260,4 +228,8 @@ print(avg_power[1]/(total*n))
 print(avg_power[2]/(total*n))
 print(avg_power[3]/(total*n))
 
+print(avg_power[0]/turn)
+print(avg_power[1]/turn)
+print(avg_power[2]/turn)
+print(avg_power[3]/turn)
 
