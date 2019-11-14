@@ -51,8 +51,6 @@ def list_add(a,b,k):
     c = []
     for i in range(len(a)):
         c.append(a[i]+b[i])
-        if k == 0:
-            print("list add: ",c)
     return c
 
 def init_now_B(access):
@@ -140,8 +138,8 @@ def change_Base_hoff(loc,Bases_loc,hoff,now_B,cari):
 
 
 def remove(Cars,time_record,x,y,i):
-  if i == 0:
-      print("in remove x = ",x,"  y = ", y)
+  #if i == 0:
+      #print(" remove x = ",x,"  y = ", y)
   if x > 3000 or x < 0 or y > 3000 or y < 0:
     print("in remove x = ",x,"  y = ", y)
     del Cars[i]
@@ -170,48 +168,61 @@ for time in range(total):
 
   # each % 75 == 0 sec, judge direction
   i = 0
-  f = [i for i,v in enumerate(time_record) if v==(time)]
-  for i in range(len(f)):
-  #if (time) in time_record:
-    k = f[i] # get index k
-    # change_dir
-    Cars[k].dir = change_dir(Cars[k].dir)
-    x = Cars[k].loc[0]
-    y = Cars[k].loc[1]
-    
-    # if car is at the corner
-    if (x == 0 and y == 0):
-        if Cars[k].dir == 2:
-             Cars[k].dir = 3
-        else: 
-             Cars[k].dir = 0
-    if (x == 3000 and y == 0):
-        if Cars[k].dir == 3:
-             Cars[k].dir = 0
-        else: 
-             Cars[k].dir = 1
-    if (x == 0 and y == 3000):
-        if Cars[k].dir == 0:
-             Cars[k].dir = 3
-        else: 
-             Cars[k].dir = 2
-    if (x == 3000 and y == 3000):
-        print("turn r/l:x = ",x," y = ",y)
-        if Cars[k].dir == 3:
-             Cars[k].dir = 2
-        else: 
-             Cars[k].dir = 1
-    time_record[k] += 75
-
+  #f = [i for i,v in enumerate(time_record) if v==(time)]
+  #for i in range(len(f)):
+  '''
+  for index, t in enumerate(time_record):
+    if t == time:
+        k = index
+        #if (time) in time_record:
+        #k = f[i] # get index k
+        # change_dir
+        Cars[k].dir = change_dir(Cars[k].dir)
+        '''
 
   # for each sec
   i = 0
   while i < len(Cars):
-    print(time)
-    print(dir_vec[Cars[0].dir])
-    print(Cars[0].loc)
-    print(Cars[0].now_B)
-    print("-----")
+    if i == 0:
+        print(time, "dir ",dir_vec[Cars[0].dir],"loc ", Cars[0].loc)
+    #print(dir_vec[Cars[0].dir])
+    #print(Cars[0].loc)
+    #print(Cars[0].now_B)
+    #print("-----")
+    
+    if (Cars[i].loc[0] % 75 == 0 and Cars[i].loc[1] % 75 == 0 ):
+      Cars[i].dir = change_dir(Cars[i].dir)
+      
+      x = Cars[i].loc[0]
+      y = Cars[i].loc[1]
+      if i == 0:
+          print("x = ",x," y = ",y)
+    # if car is at the corner
+      if (x == 0 and y == 0):
+          if Cars[i].dir == 2:
+              Cars[i].dir = 3
+          else: 
+              Cars[i].dir = 0
+      if (x == 3000 and y == 0):
+          if Cars[i].dir == 3:
+              Cars[i].dir = 0
+          else: 
+              Cars[i].dir = 1
+      if (x == 0 and y == 3000):
+          if Cars[i].dir == 0:
+              Cars[i].dir = 3
+          else: 
+              Cars[i].dir = 2
+      if (x == 3000 and y == 3000):
+          print("turn r/l:x = ",x," y = ",y)
+          if Cars[i].dir == 3:
+              Cars[i].dir = 2
+          else: 
+              Cars[i].dir = 1
+      time_record[i] += 75
+        
+    
+    
     turn += 1
     Cars[i].loc = list_add(Cars[i].loc,dir_vec[Cars[i].dir],i)        
     if remove(Cars,time_record,Cars[i].loc[0],Cars[i].loc[1],i):
