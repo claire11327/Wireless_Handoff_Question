@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Nov 13 10:44:49 2019
+
+@author: user
+"""
+
 import matplotlib.pyplot as plt
 import random
 import math
@@ -143,11 +150,22 @@ def remove(Cars,time_record,x,y,i):
     del time_record[i-1]
     return True
 
+n = 1
 
+
+
+ 
+hh = -1
+hhh = 0
+hhhh = 0
 
 
 # main
 for time in range(total):
+  #j = 0
+  #for j in range(12): 
+    #access = j
+  '''
   if random.randint(1,31) == 1:
       n += 1
       access = random.randint(0,11)   # choose entry
@@ -159,6 +177,27 @@ for time in range(total):
       car.now_B = init_now_B(access)
       Cars.append(car)
       time_record.append((time)+75) # time = car.init_t
+    '''
+  #print(len(Cars))
+
+    
+  if len(Cars) < 1:
+      print("************")
+      access = random.randint(0,11)   # choose entry
+      # new / init car
+      car = Car_struct()
+      car.loc = Entry[access]
+      car.dir = change_dir(math.floor(access/3))
+      car.init_t = time # time start at t = 0
+      car.now_B = init_now_B(access)
+      Cars.append(car)
+      time_record.append((time)+75) # time = car.init_t
+
+
+
+  #print(len(Cars))
+  #print(Cars[0].loc)
+
 
   # for each sec
   i = 0
@@ -167,7 +206,17 @@ for time in range(total):
     Cars[i].loc = list_add(Cars[i].loc,dir_vec[Cars[i].dir])    
     Cars[i].now_B = change_Base_hoff(Cars[i].loc,Base,hoff,Cars[i].now_B,i)
     
-      
+
+    if (hoff[2] != hoff[1] and hh != hoff[2]) or hh == -1:      
+        hh = hoff[2]
+        hhh = 0
+        print("time = ",time)
+        print("now_B = ",Cars[i].now_B)
+        print("handoff = ",hoff)
+    if hoff[2] < hoff[0] - 2:
+        hhhh = input()
+    
+    
     if remove(Cars,time_record,Cars[i].loc[0],Cars[i].loc[1],i):
       i += 1
     i+= 1
@@ -189,19 +238,19 @@ for time in range(total):
         if Cars[k].dir == 2:
              Cars[k].dir = 3
         else: 
-             Cars[k].dir = 0
+             Cars[k].dir = 2
     if (x == 3000 and y == 0):
-        if Cars[k].dir == 3:
-             Cars[k].dir = 0
-        else: 
-             Cars[k].dir = 1
-    if (x == 0 and y == 3000):
         if Cars[k].dir == 0:
              Cars[k].dir = 3
         else: 
-             Cars[k].dir = 2
+             Cars[k].dir = 0
+    if (x == 0 and y == 3000):
+        if Cars[k].dir == 0:
+             Cars[k].dir = 1
+        else: 
+             Cars[k].dir = 0
     if (x == 3000 and y == 3000):
-        if Cars[k].dir == 3:
+        if Cars[k].dir == 1:
              Cars[k].dir = 2
         else: 
              Cars[k].dir = 1
@@ -210,10 +259,10 @@ for time in range(total):
 
 
 
-  handoff_0[time] = hoff[0]*12
-  handoff_1[time] = hoff[1]*12
-  handoff_2[time] = hoff[2]*12
-  handoff_3[time] = hoff[3]*12
+  handoff_0[time] = hoff[0]
+  handoff_1[time] = hoff[1]
+  handoff_2[time] = hoff[2]
+  handoff_3[time] = hoff[3]
 
 plt.figure()
 plt.plot(times,handoff_0,label="$Best$",color="red")
