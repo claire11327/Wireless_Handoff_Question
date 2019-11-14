@@ -190,7 +190,7 @@ for time in range(total):
     #print(Cars[0].now_B)
     #print("-----")
     
-    if (Cars[i].loc[0] % 75 == 0 and Cars[i].loc[1] % 75 == 0 ):
+    if (Cars[i].loc[0] % 750 == 0 and Cars[i].loc[1] % 75 == 0 ):
       Cars[i].dir = change_dir(Cars[i].dir)
       
       x = Cars[i].loc[0]
