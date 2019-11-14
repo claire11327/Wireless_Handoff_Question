@@ -130,7 +130,11 @@ def change_Base_hoff(loc,Bases_loc,hoff,now_B,cari):
   avg_power[0] += P[now_B[0]]
   avg_power[1] += P[now_B[1]]
   avg_power[2] += P[now_B[2]]
-  avg_power[3] += P[now_B[3]]    
+  avg_power[3] += P[now_B[3]] 
+
+
+  if cari == 0:
+      print("P = ",P)
      
   return now_B
 
@@ -184,13 +188,13 @@ for time in range(total):
   i = 0
   while i < len(Cars):
     if i == 0:
-        print(time, "dir ",dir_vec[Cars[0].dir],"loc ", Cars[0].loc)
+        print(time, "dir ",dir_vec[Cars[0].dir],"loc ", Cars[0].loc,"B ",Cars[0].now_B)
     #print(dir_vec[Cars[0].dir])
     #print(Cars[0].loc)
     #print(Cars[0].now_B)
     #print("-----")
     
-    if (Cars[i].loc[0] % 750 == 0 and Cars[i].loc[1] % 75 == 0 ):
+    if (Cars[i].loc[0] % 750 == 0 and Cars[i].loc[1] % 750 == 0 ):
       Cars[i].dir = change_dir(Cars[i].dir)
       
       x = Cars[i].loc[0]
