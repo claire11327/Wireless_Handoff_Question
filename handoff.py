@@ -47,10 +47,12 @@ class Car_struct:
         self.now_B = [0,0,0,0]
 
 
-def list_add(a,b):
+def list_add(a,b,k):
     c = []
     for i in range(len(a)):
         c.append(a[i]+b[i])
+        if k == 0:
+            print("list add: ",c)
     return c
 
 def init_now_B(access):
@@ -138,9 +140,12 @@ def change_Base_hoff(loc,Bases_loc,hoff,now_B,cari):
 
 
 def remove(Cars,time_record,x,y,i):
+  if i == 0:
+      print("in remove x = ",x,"  y = ", y)
   if x > 3000 or x < 0 or y > 3000 or y < 0:
-    del Cars[i-1]
-    del time_record[i-1]
+    print("in remove x = ",x,"  y = ", y)
+    del Cars[i]
+    del time_record[i]
     return True
 
 
@@ -160,17 +165,7 @@ for time in range(total):
       Cars.append(car)
       time_record.append((time)+75) # time = car.init_t
 
-  # for each sec
-  i = 0
-  while i < len(Cars):
-    turn += 1
-    Cars[i].loc = list_add(Cars[i].loc,dir_vec[Cars[i].dir])    
-    Cars[i].now_B = change_Base_hoff(Cars[i].loc,Base,hoff,Cars[i].now_B,i)
-    
-      
-    if remove(Cars,time_record,Cars[i].loc[0],Cars[i].loc[1],i):
-      i += 1
-    i+= 1
+
 
 
   # each % 75 == 0 sec, judge direction
@@ -201,11 +196,33 @@ for time in range(total):
         else: 
              Cars[k].dir = 2
     if (x == 3000 and y == 3000):
+        print("turn r/l:x = ",x," y = ",y)
         if Cars[k].dir == 3:
              Cars[k].dir = 2
         else: 
              Cars[k].dir = 1
     time_record[k] += 75
+
+
+  # for each sec
+  i = 0
+  while i < len(Cars):
+    print(time)
+    print(dir_vec[Cars[0].dir])
+    print(Cars[0].loc)
+    print(Cars[0].now_B)
+    print("-----")
+    turn += 1
+    Cars[i].loc = list_add(Cars[i].loc,dir_vec[Cars[i].dir],i)        
+    if remove(Cars,time_record,Cars[i].loc[0],Cars[i].loc[1],i):
+      i += 1
+    if(i < len(Cars)):
+      Cars[i].now_B = change_Base_hoff(Cars[i].loc,Base,hoff,Cars[i].now_B,i)
+    
+
+    i+= 1
+
+
 
 
 
